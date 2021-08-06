@@ -1,5 +1,4 @@
 {
-  "enableMem": true,
   "plugins": [],
   "sassLoaderOptions": {
     "prependData": ".test{color:red}"

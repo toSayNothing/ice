@@ -21,7 +21,7 @@ function getRoutes({ rootDir, tempPath, configPath, projectType, isMpa, srcDir }
   if (isMpa) {
     const routesTempPath = path.join(tempPath, 'routes.ts');
     cache.writeFileSync(routesTempPath, 'export default [];');
-    // fse.writeFileSync(routesTempPath, 'export default [];', 'utf-8');
+    fse.writeFileSync(routesTempPath, 'export default [];', 'utf-8');
     configPath = routesTempPath;
     return {
       routesPath: configPath,

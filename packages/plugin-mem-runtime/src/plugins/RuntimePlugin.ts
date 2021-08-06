@@ -1,4 +1,4 @@
-import { unionfs, cache } from '@builder/app-helpers';
+import { unionfs } from '@builder/app-helpers';
 import type { WebpackPluginInstance, Compiler } from 'webpack';
 
 export interface Options {

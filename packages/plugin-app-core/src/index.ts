@@ -107,7 +107,7 @@ function initGenerator(api, options) {
   const { userConfig, rootDir } = context;
   const { framework, hasJsxRuntime } = options;
   const plugins = getAllPlugin();
-  const { targets = [], ssr = false } = userConfig;
+  const { targets = [], ssr = false, enableMem } = userConfig;
   const isMiniapp = targets.some((target: string) => miniappPlatforms.includes(target));
   const targetDir = getValue(TEMP_PATH);
   return new Generator({
@@ -128,6 +128,7 @@ function initGenerator(api, options) {
     },
     log,
     plugins,
+    enableMem
   });
 }
 

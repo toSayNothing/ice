@@ -56,13 +56,15 @@ export default class Generator {
 
   private log: any;
 
+  private enableMem: boolean;
+
   private showPrettierError: boolean;
 
   private disableRuntimePlugins: string[];
 
   private plugins: any[];
 
-  constructor({ rootDir, targetDir, defaultData, log, plugins }) {
+  constructor({ rootDir, targetDir, defaultData, log, plugins, enableMem }) {
     this.rootDir = rootDir;
     this.targetDir = targetDir;
     this.renderData = defaultData;
@@ -74,6 +76,7 @@ export default class Generator {
     this.renderDataRegistration = [];
     this.plugins = plugins;
     this.disableRuntimePlugins = [];
+    this.enableMem = false;
   }
 
   public addExport = (registerKey, exportData: IExportData | IExportData[]) => {
@@ -164,7 +167,7 @@ export default class Generator {
       return previousValue;
     }, this.parseRenderData());
 
-    this.renderData.runtimeModules = getRuntimeModules(plugins, this.targetDir);
+    this.renderData.runtimeModules = getRuntimeModules(plugins, this.targetDir, this.enableMem);
 
     this.renderTemplates.forEach((args) => {
       this.renderFile(...args);
@@ -238,15 +241,19 @@ export default class Generator {
         }
       }
       const realTargetPath = targetPath.replace(renderExt, '');
-      cache.mkdirpSync(path.dirname(realTargetPath));
-      cache.writeFileSync(realTargetPath, content);
-      // fse.ensureDirSync(path.dirname(realTargetPath));
-      // fse.writeFileSync(realTargetPath, content, 'utf-8');
-    } else {
+      if (this.enableMem) {
+        cache.mkdirpSync(path.dirname(realTargetPath));
+        cache.writeFileSync(realTargetPath, content);
+      } else {
+        fse.ensureDirSync(path.dirname(realTargetPath));
+        fse.writeFileSync(realTargetPath, content, 'utf-8');
+      }
+    } else if (this.enableMem) {
       cache.mkdirpSync(path.dirname(targetPath));
       cache.writeFileSync(targetPath, fse.readFileSync(templatePath, 'utf-8'));
-      // fse.ensureDirSync(path.dirname(targetPath));
-      // fse.copyFileSync(templatePath, targetPath);
+    } else {
+      fse.ensureDirSync(path.dirname(targetPath));
+      fse.copyFileSync(templatePath, targetPath);
     }
   }
 
