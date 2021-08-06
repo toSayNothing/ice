@@ -245,7 +245,6 @@ export default class Generator {
     } else {
       cache.mkdirpSync(path.dirname(targetPath));
       cache.writeFileSync(targetPath, fse.readFileSync(templatePath, 'utf-8'));
-      // mfs.copyFileSync(templatePath, targetPath);
       // fse.ensureDirSync(path.dirname(targetPath));
       // fse.copyFileSync(templatePath, targetPath);
     }

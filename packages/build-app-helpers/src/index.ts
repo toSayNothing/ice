@@ -9,8 +9,4 @@ export { default as checkExportDefaultDeclarationExists } from './checkExportDef
 export { default as getSassImplementation } from './getSassImplementation';
 export { default as getLessImplementation } from './getLessImplementation';
 export { default as redirectImport } from './redirectImport';
-export {
-  stockFs,
-  cache,
-  unionfs
-} from './fs';
+export * from './fs';

@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fse from 'fs-extra';
+import { cache, emptyDirSync } from '@builder/app-helpers';
 import { TEMP_PATH, ICE_TEMP } from '../constant';
 
 export default (api, options) => {
@@ -13,6 +14,9 @@ export default (api, options) => {
   const tempPath = path.join(rootDir, `.${process.env.__FRAMEWORK_NAME__ || tempDir}`);
   setValue(TEMP_PATH, tempPath);
   setValue(ICE_TEMP, tempPath);
+
+  cache.mkdirpSync(tempPath);
+  emptyDirSync(tempPath);
 
   fse.ensureDirSync(tempPath);
   fse.emptyDirSync(tempPath);

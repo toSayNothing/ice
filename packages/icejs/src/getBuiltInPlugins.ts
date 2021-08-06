@@ -25,6 +25,7 @@ const getBuiltInPlugins: IGetBuiltInPlugins = (userConfig) => {
     'alias': process.env.__FRAMEWORK_NAME__ || 'ice'
   } as Json;
   const plugins: IPluginList = [
+    'build-plugin-mem-runtime',
     // common plugins
     ['build-plugin-app-core', coreOptions],
     'build-plugin-ice-logger',
