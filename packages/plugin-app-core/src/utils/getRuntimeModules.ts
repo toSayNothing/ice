@@ -1,8 +1,13 @@
 import * as path from 'path';
 import * as fse from 'fs-extra';
+import { fs as mfs } from 'memfs';
 import * as globby from 'globby';
 import formatPath from './formatPath';
 import formatPluginDir from './formatPluginDir';
+
+// const toMemfs = (src) => {
+//   mfs.fromJSON();
+// };
 
 export default (plugins: any = [], targetDir: string) => {
   return plugins.map(({ pluginPath, name }) => {
@@ -25,6 +30,8 @@ export default (plugins: any = [], targetDir: string) => {
         const runtimePaths = globby.sync('runtime.@((t|j)s?(x))', { cwd: srcDir });
         if (runtimePaths.length > 0) {
           // copy source code when runtime exists
+          // mfs.mkdirpSync(tempDir);
+          // mfs.copySync(srcDir, tempDir);
           fse.ensureDirSync(tempDir);
           fse.copySync(srcDir, tempDir);
           absoluteModulePath = path.join(tempDir, runtimePaths[0]).replace(/.(t|j)(s|sx)$/, '');

@@ -1,5 +1,4 @@
 {
-  "vite": true,
   "plugins": [],
   "sassLoaderOptions": {
     "prependData": ".test{color:red}"

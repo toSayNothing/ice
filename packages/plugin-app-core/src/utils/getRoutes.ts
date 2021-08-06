@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fse from 'fs-extra';
+import { cache } from '@builder/app-helpers';
 
 interface IParams {
   rootDir: string;
@@ -19,7 +20,8 @@ function getRoutes({ rootDir, tempPath, configPath, projectType, isMpa, srcDir }
   // if is mpa use empty router file
   if (isMpa) {
     const routesTempPath = path.join(tempPath, 'routes.ts');
-    fse.writeFileSync(routesTempPath, 'export default [];', 'utf-8');
+    cache.writeFileSync(routesTempPath, 'export default [];');
+    // fse.writeFileSync(routesTempPath, 'export default [];', 'utf-8');
     configPath = routesTempPath;
     return {
       routesPath: configPath,

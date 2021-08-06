@@ -177,7 +177,7 @@ export const wp2vite = (context: Context): Result => {
   const devConfig = all([
     {
       optimizeDeps: {
-        entries: entryExts.exec(userConfig.entry as string) ? userConfig.entry : `${userConfig.entry}.*`,
+        // entries: entryExts.exec(userConfig.entry as string) ? userConfig.entry : `${userConfig.entry}.*`,
         include: ['react-app-renderer', 'create-app-shared'],
       },
       server: devServerConfig,

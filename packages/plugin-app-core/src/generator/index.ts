@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fse from 'fs-extra';
+import { cache } from '@builder/app-helpers';
 import * as globby from 'globby';
 import * as ejs from 'ejs';
 import * as prettier from 'prettier';
@@ -190,8 +191,8 @@ export default class Generator {
     }
   }
 
-  public addTemplateFiles = (templateOptions: string|ITemplateOptions, extraData: IExtraData = {}) => {
-    const { template, targetDir } = typeof templateOptions === 'string' ? { template: templateOptions, targetDir: ''} : templateOptions;
+  public addTemplateFiles = (templateOptions: string | ITemplateOptions, extraData: IExtraData = {}) => {
+    const { template, targetDir } = typeof templateOptions === 'string' ? { template: templateOptions, targetDir: '' } : templateOptions;
     const templates = !path.extname(template) ? globby.sync(['**/*'], { cwd: template }) : [template];
     templates.forEach((templateFile) => {
       const templatePath = path.isAbsolute(templateFile) ? templateFile : path.join(template, templateFile);
@@ -237,11 +238,16 @@ export default class Generator {
         }
       }
       const realTargetPath = targetPath.replace(renderExt, '');
-      fse.ensureDirSync(path.dirname(realTargetPath));
-      fse.writeFileSync(realTargetPath, content, 'utf-8');
+      cache.mkdirpSync(path.dirname(realTargetPath));
+      cache.writeFileSync(realTargetPath, content);
+      // fse.ensureDirSync(path.dirname(realTargetPath));
+      // fse.writeFileSync(realTargetPath, content, 'utf-8');
     } else {
-      fse.ensureDirSync(path.dirname(targetPath));
-      fse.copyFileSync(templatePath, targetPath);
+      cache.mkdirpSync(path.dirname(targetPath));
+      cache.writeFileSync(targetPath, fse.readFileSync(templatePath, 'utf-8'));
+      // mfs.copyFileSync(templatePath, targetPath);
+      // fse.ensureDirSync(path.dirname(targetPath));
+      // fse.copyFileSync(templatePath, targetPath);
     }
   }
 
