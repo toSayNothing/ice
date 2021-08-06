@@ -76,7 +76,7 @@ export default class Generator {
     this.renderDataRegistration = [];
     this.plugins = plugins;
     this.disableRuntimePlugins = [];
-    this.enableMem = false;
+    this.enableMem = enableMem;
   }
 
   public addExport = (registerKey, exportData: IExportData | IExportData[]) => {
