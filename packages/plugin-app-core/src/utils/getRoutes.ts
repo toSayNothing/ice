@@ -2,13 +2,14 @@ import * as path from 'path';
 import * as fse from 'fs-extra';
 import { cache } from '@builder/app-helpers';
 
-interface IParams {
+export interface IParams {
   rootDir: string;
   tempPath: string;
   configPath: string;
   projectType: string;
   isMpa: boolean;
   srcDir: string;
+  enableMem: boolean;
 }
 
 interface IResult {
@@ -16,12 +17,16 @@ interface IResult {
   isConfigRoutes: boolean;
 }
 
-function getRoutes({ rootDir, tempPath, configPath, projectType, isMpa, srcDir }: IParams): IResult {
+function getRoutes({ rootDir, tempPath, configPath, projectType, isMpa, srcDir, enableMem }: IParams): IResult {
   // if is mpa use empty router file
   if (isMpa) {
     const routesTempPath = path.join(tempPath, 'routes.ts');
-    cache.writeFileSync(routesTempPath, 'export default [];');
-    fse.writeFileSync(routesTempPath, 'export default [];', 'utf-8');
+    if (enableMem) {
+      cache.mkdirpSync(tempPath);
+      cache.writeFileSync(routesTempPath, 'export default [];');
+    } else {
+      fse.writeFileSync(routesTempPath, 'export default [];', 'utf-8');
+    }
     configPath = routesTempPath;
     return {
       routesPath: configPath,

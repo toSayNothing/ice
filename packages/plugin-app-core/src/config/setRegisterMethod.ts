@@ -1,5 +1,5 @@
 import getPages from '../utils/getPages';
-import getRoutes from '../utils/getRoutes';
+import getRoutes, { IParams } from '../utils/getRoutes';
 import formatPath from '../utils/formatPath';
 import getSourceDir from '../utils/getSourceDir';
 import formatPluginDir from '../utils/formatPluginDir';
@@ -25,19 +25,21 @@ interface ImportDeclarationData {
 }
 
 export default (api, options) => {
-  const { registerMethod } = api;
+  const { registerMethod, context } = api;
   const { generator } = options;
 
   // register utils method
   registerMethod('getPages', getPages);
   registerMethod('formatPath', formatPath);
-  registerMethod('getRoutes', getRoutes);
+  registerMethod('getRoutes', (data: Omit<IParams, 'enableMem'>) => getRoutes({
+    ...data, enableMem: context.userConfig.enableMem
+  }));
   registerMethod('getSourceDir', getSourceDir);
   registerMethod('getBuildConfig', getBuildConfig);
 
   // registerMethod for render content
   registerMethod('addRenderFile', generator.addRenderFile);
-  registerMethod('addPluginTemplate', (pluginName?: string) => (templateOptions: string|ITemplateOptions, extraData: IRenderData) => {
+  registerMethod('addPluginTemplate', (pluginName?: string) => (templateOptions: string | ITemplateOptions, extraData: IRenderData) => {
     const { template, targetDir } = typeof templateOptions === 'string'
       ? { template: templateOptions, targetDir: formatPluginDir(pluginName) }
       : templateOptions;
