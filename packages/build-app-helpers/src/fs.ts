@@ -23,31 +23,25 @@ const emptyDirSync = (dir: string) => {
     item = path.join(dir, item);
     cache.rmdirSync(item);
   });
-  cache.toJSON();
 };
 
 const copy2Cache = (root: string, tar?: string) => {
-  const readAll = (src: string, list = []) => {
+  const readAll = (src: string) => {
     const files = fs.readdirSync(src);
     files.forEach((item) => {
-      const tempPath = path.join(src, item);
-      const stats = fs.statSync(tempPath);
+      const realPath = path.join(src, item);
+      const unrealPath = path.join(tar, path.relative(root, realPath));
+      const stats = fs.statSync(realPath);
       if (stats.isDirectory()) {
-        readAll(tempPath, list);
+        cache.mkdirpSync(unrealPath);
+        readAll(realPath);
       } else {
-        list.push(path.relative(root, tempPath));
+        cache.writeFileSync(unrealPath, fse.readFileSync(realPath));
       }
     });
   };
 
-  const data = {};
-  const list = [];
-  readAll(root, list);
-  list.forEach((item) => {
-    data[path.join(tar, item)] = fse.readFileSync(path.join(root, item));
-  });
-  cache.mkdirpSync(tar);
-  cache.fromJSON(data);
+  readAll(root);
 };
 
 export {

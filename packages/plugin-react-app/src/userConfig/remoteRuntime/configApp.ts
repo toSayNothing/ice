@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fse from 'fs-extra';
+import { cache } from '@builder/app-helpers';
 import { IPluginAPI } from 'build-scripts';
 
 export default (api: IPluginAPI, { remoteName, bootstrap, remoteEntry, compilePackages, runtimeDir }) => {
@@ -10,7 +11,11 @@ export default (api: IPluginAPI, { remoteName, bootstrap, remoteEntry, compilePa
   let bootstrapEntry = '';
   if (!bootstrap) {
     bootstrapEntry = path.join(getValue('TEMP_PATH'), 'bootstrap.ts');
-    fse.writeFileSync(bootstrapEntry, 'import(\'../src/app\')', 'utf-8');
+    if (context.userConfig.enableMem) {
+      cache.writeFileSync(bootstrapEntry, 'import(\'../src/app\')');
+    } else {
+      fse.writeFileSync(bootstrapEntry, 'import(\'../src/app\')', 'utf-8');
+    }
   } else {
     bootstrapEntry = path.isAbsolute(bootstrap) ? bootstrap : path.join(rootDir, bootstrap);
   }

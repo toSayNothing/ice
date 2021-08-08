@@ -12,7 +12,7 @@ const plugin: IPlugin = async ({ context, registerUserConfig, onGetWebpackConfig
 
   onGetWebpackConfig(config => {
     const { userConfig: { enableMem } } = context;
-    config.plugin('mem-runtime-plugin').use(RuntimePlugin, [{ enableMem } as any]);
+    config.plugin('mem-runtime-plugin').use(RuntimePlugin, [{ enabled: enableMem } as any]);
   });
 };
 
