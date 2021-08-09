@@ -6,6 +6,7 @@ export interface Options {
 }
 
 export class RuntimePlugin implements WebpackPluginInstance {
+
   private readonly options: Partial<Options> = {};
 
   constructor(options: Options) {
@@ -17,13 +18,5 @@ export class RuntimePlugin implements WebpackPluginInstance {
     if (!enabled) return;
 
     compiler.inputFileSystem = unionfs;
-    // compiler.resolverFactory.hooks.resolveOptions.for('loader').tap('WebpackOptionsApply', (resolveOptions) => {
-    //   return Object.assign(
-    //     {
-    //       fileSystem: compiler.inputFileSystem,
-    //     },
-    //     resolveOptions
-    //   );
-    // });
   }
 }

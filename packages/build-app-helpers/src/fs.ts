@@ -25,9 +25,9 @@ const emptyDirSync = (dir: string) => {
   });
 };
 
-const copy2Cache = (root: string, tar?: string) => {
+const copy2Cache = (root: string, tar: string) => {
   const readAll = (src: string) => {
-    const files = fs.readdirSync(src);
+    const files = fse.readdirSync(src);
     files.forEach((item) => {
       const realPath = path.join(src, item);
       const unrealPath = path.join(tar, path.relative(root, realPath));

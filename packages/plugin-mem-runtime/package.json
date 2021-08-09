@@ -1,7 +1,7 @@
 {
   "name": "build-plugin-mem-runtime",
   "version": "0.1.0",
-  "description": "multi themes",
+  "description": "memory runtime",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest"
