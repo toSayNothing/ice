@@ -2,7 +2,7 @@
 import * as glob from 'glob';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as nsfw from 'nsfw';
+import * as chokidar from 'chokidar';
 import { run } from './fn/shell';
 
 (async () => {
@@ -21,20 +21,27 @@ import { run } from './fn/shell';
     fileSet.add(path.join(cwd, file));
   }
 
-  const watcher = await nsfw(cwd, (e) => {
-    e.forEach((e) => {
-      if (e.action === nsfw.actions.CREATED || e.action === nsfw.actions.MODIFIED ||  e.action === nsfw.actions.RENAMED) {
-        // eslint-disable-next-line
-        const filePath = e.newFile ? path.join(e.directory, e.newFile!) : path.join(e.directory, e.file!);
-        if (fileSet.has(filePath)) {
-          console.log('non-ts change detected:', filePath);
-          copyOneFile(path.relative(cwd, filePath), cwd);
-        }
-      }
-    });
+  const watcher = chokidar.watch('.', {
+    cwd,
+    interval: 100,
+    persistent: true,
+    ignoreInitial: true,
+    awaitWriteFinish: {
+      stabilityThreshold: 1000,
+      pollInterval: 100,
+    },
   });
 
-  watcher.start();
+  const onFileAddOrChange = (filePath: string) => {
+    const absPath = path.join(cwd, filePath);
+    if (fileSet.has(absPath)) {
+      console.log('non-ts change detected:', absPath);
+      copyOneFile(path.relative(cwd, absPath), cwd);
+    }
+  };
+
+  watcher.on('add', onFileAddOrChange);
+  watcher.on('change', onFileAddOrChange);
 
   await run('npx tsc --build ./tsconfig.json -w');
 })().catch((e) => {
@@ -44,6 +51,6 @@ import { run } from './fn/shell';
 
 async function copyOneFile(file, cwd) {
   const from = path.join(cwd, file);
-  const to = path.join(cwd, file.replace(/\/src\//, '/lib/'));
+  const to = path.join(cwd, file.replace(/(?<=(\\|\/))src(?=(\\|\/))/g, 'lib'));
   await fs.copy(from, to);
 }
